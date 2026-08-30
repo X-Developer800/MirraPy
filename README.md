@@ -2,21 +2,30 @@
 
 Python用のMirattivAPIラッパー
 
-インストールはこちら
+## インストール
 
 ```bash
 pip install mirrapy
 ```
 
-更新する場合
+## パッケージを更新する場合：
+
 ```bash
 pip install --upgrade mirrapy
 ```
 
-## 始める前に確認すること
+- リスト1
+    - リスト1_1
+        - リスト1_1_1
+        - リスト1_1_2
+    - リスト1_2
+- リスト2
+- リスト3
+
+## 注意事項
 一気に2個以上アカウントを作成すると一時的にIPがロックされます
 
-#### example.py  
+#### 使い方（サンプルコード）
 ```py
 from MirraPy import Client, MirrativError
 import httpx, asyncio
