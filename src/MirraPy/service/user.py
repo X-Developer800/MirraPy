@@ -7,6 +7,7 @@ from ..utils.ensure import Ensure
 
 class UserService(Base):
     def __init__(self, client: httpx.AsyncClient):
+        super().__init__(client) 
         self.client = client
     
     async def create_account(self, name: str, description: str = "create by XXX", url: str = "https://x.com/xxxxvtnk", save_mode: bool = None):
@@ -47,7 +48,7 @@ class UserService(Base):
         )
         
     async def edit_profile(self, user_id: int | str, name: str, description: str = "create by XXX", url: str = "https://x.com/xxxxvtnk") -> dict[str, Any]:
-        await Ensure.user_exists(user_id, self.client)
+        await Ensure.user_exists(self, user_id)
         if not url.startswith("https://"):
             raise MirrativError("有効なUrlを指定してください")
         

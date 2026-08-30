@@ -9,10 +9,11 @@ from ..utils.extract import Extract
 
 class UtilService(Base):
     def __init__(self, client: httpx.AsyncClient):
+        super().__init__(client) 
         self.client = client
         
     async def get_profile(self, user_id: int | str): 
-        await Ensure.user_exists(user_id, self.client)
+        await Ensure.user_exists(self, user_id)
         params = {"user_id": str(user_id)}
         data = await self.get(client=self.client, url=EndPoint.User.PROFILE, params=params)
             
@@ -34,7 +35,7 @@ class UtilService(Base):
         )
     
     async def live_request(self, user_id, count: str | int) -> dict[str, Any]:      
-        await Ensure.user_exists(user_id, self.client)          
+        await Ensure.user_exists(self, user_id)       
         Validator.Int(count, "有効な回数を設定してください")
         safe_count = min(int(count), 9999)
                                     
@@ -51,7 +52,7 @@ class UtilService(Base):
         target_str = str(user_id_or_url)
         if target_str.startswith("https"): return Extract.url(target_str) 
         
-        await Ensure.user_exists(target_str, self.client)
+        await Ensure.user_exists(self, user_id_or_url)
         params = {"user_id": target_str}
         data = await self.get(client=self.client, url=EndPoint.Live.LIVE_HISTORY, params=params)
         

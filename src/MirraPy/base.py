@@ -15,11 +15,13 @@ class Base:
         {"model": "SH-51C", "os": "13"}
     ]
     
-    def __init__(self):
+    def __init__(self, client: httpx.AsyncClient):
         self.live_id: str = None
+        self.client = client
 
     def set_liveid(self, live_id: str) -> str:
         self.live_id = str(live_id)
+        return self.live_id
         
     def _create_header(self) -> dict[str, str]:
         device = random.choice(self.DEVICES)
@@ -56,12 +58,13 @@ class Base:
                     raise MirrativError(error_msg)
         return data
     
-    async def get(self, client: httpx.AsyncClient, url, params) -> dict[str, Any]:
+    async def _request(self, method: str, url: str, **kwargs):
         headers = self._create_header()
-        response = await client.get(url, headers=headers, params=params)
+        response = await self.client.request(method, url, headers=headers, **kwargs)
         return self._handle_response(response)
     
-    async def post(self, client: httpx.AsyncClient, url, data_payload) -> dict[str, Any]:
-        headers = self._create_header()
-        response = await client.post(url, headers=headers, data=data_payload)
-        return self._handle_response(response)
+    async def get(self, url, params) -> dict[str, Any]:
+        return await self._request("GET", url, params=params)
+    
+    async def post(self, url, data_payload) -> dict[str, Any]:
+        return await self._request("POST", url, data=data_payload)

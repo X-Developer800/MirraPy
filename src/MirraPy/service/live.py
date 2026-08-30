@@ -6,7 +6,7 @@ from ..utils.ensure import Ensure
 
 class LiveService(Base):
     def __init__(self, client: httpx.AsyncClient):
-        super().__init__() 
+        super().__init__(client) 
         self.client = client
         
     async def Collabo_Request(self, live_id: str | None = None):

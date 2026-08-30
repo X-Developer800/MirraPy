@@ -13,9 +13,8 @@ class Ensure:
         return str(target_id)
     
     @staticmethod
-    async def user_exists(user_id: int | str, client: httpx.AsyncClient) -> None:
-        base = Base()
+    async def user_exists(base, user_id: int | str) -> None:
         Validator.Int(user_id, "有効なユーザーIDを設定してください")
         params = {"q": str(user_id)}
-        data = await base.get(client=client, url=EndPoint.User.SEARCH, params=params)
+        data = await base.get(url=EndPoint.User.SEARCH, params=params)
         if not data.get("users"): raise MirrativError("ユーザーがみつかりません。")
