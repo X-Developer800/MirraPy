@@ -2,9 +2,7 @@
 
 Python用のMirattivAPIラッパー
 
-## インストール方法
-
-PyPIから `pip` を使ってインストールできます。
+## インストールはこちら
 
 ```bash
 pip install mirrapy
@@ -73,8 +71,12 @@ async def create_ac():
         print(result.userid) #ユーザーID
         print(result.mr_id) #ミラティブID これがないとログインできない
 
-```
-
 asyncio.run(main())
 asyncio.run(login_edit())
 asyncio.run(create_ac())
+```
+
+### 補足
+Mirattivのログイン鍵があるのでログイン機能も追加予定。
+
+
