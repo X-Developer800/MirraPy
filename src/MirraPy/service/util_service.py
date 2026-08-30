@@ -55,7 +55,7 @@ class Util_Service(Base):
         return None
     
     async def parse_url(self, url: str) -> Optional[str]:
-        decoded_url = unquote(url)
+        decoded_url = self.extract_url(url)
         match = re.search(r'/live/([a-zA-Z0-9_-]+)', decoded_url)
         
         if match:

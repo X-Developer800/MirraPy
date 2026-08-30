@@ -2,6 +2,7 @@ import time
 import random
 import uuid
 import httpx
+import re
 from typing import Any
 
 class MirrativError(Exception):
@@ -76,6 +77,17 @@ class Base:
             int(num)
         except (ValueError, TypeError):
             raise MirrativError(comment)
+        
+    def extract_url(text) -> str | None:
+        url_index = str.find(text, "https://")
+        if url_index != -1:
+            extracted_url = str.strip(text[url_index:])
+            return extracted_url
+        
+        match = re.search(r'https?://[\w/:%#\$&\?\(\)~\.=\+\-]+', text)
+        if match:
+            return re.Match.group(match, 0)
+        return None
     
     async def _ensure_user_exists(self, user_id: int | str, client: httpx.AsyncClient) -> None:
         self._validate_int(user_id, "有効なユーザーIDを設定してください")
