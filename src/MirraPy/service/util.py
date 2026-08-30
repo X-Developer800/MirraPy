@@ -15,7 +15,7 @@ class UtilService(Base):
     async def get_profile(self, user_id: int | str): 
         await Ensure.user_exists(self, user_id)
         params = {"user_id": str(user_id)}
-        data = await self.get(client=self.client, url=EndPoint.User.PROFILE, params=params)
+        data = await self.get(url=EndPoint.User.PROFILE, params=params)
             
         class Res(NamedTuple):
             name: str
@@ -45,7 +45,7 @@ class UtilService(Base):
             'where': "profile"
         }
         
-        data = await self.post(client=self.client, url=EndPoint.User.LIVE_REQUEST, data_payload=payload)
+        data = await self.post(url=EndPoint.User.LIVE_REQUEST, data_payload=payload)
         return data
     
     async def get_liveID(self, user_id_or_url: str | int) -> Optional[str]:
@@ -54,7 +54,7 @@ class UtilService(Base):
         
         await Ensure.user_exists(self, user_id_or_url)
         params = {"user_id": target_str}
-        data = await self.get(client=self.client, url=EndPoint.Live.LIVE_HISTORY, params=params)
+        data = await self.get(url=EndPoint.Live.LIVE_HISTORY, params=params)
         
         lives = data.get("lives")
         if lives and isinstance(lives, list) and len(lives) > 0:

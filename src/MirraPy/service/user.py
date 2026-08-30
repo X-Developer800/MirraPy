@@ -31,7 +31,7 @@ class UserService(Base):
             'is_vip_public': '1',
             'include_urge_users': '0'
         }
-        data = await self.post(client=self.client, url=EndPoint.User.PROFILE_EDIT, data_payload=payload)
+        data = await self.post(url=EndPoint.User.PROFILE_EDIT, data_payload=payload)
         cookies = self.client.cookies
         if save_mode:
             Json_Manager.save(mr_id=cookies.get('mr_id', ''), user_id=str(user_id))
@@ -64,5 +64,5 @@ class UserService(Base):
             'is_vip_public': '1',
             'include_urge_users': '0'
         }
-        data = await self.post(client=self.client, url=EndPoint.User.PROFILE_EDIT, data_payload=payload)
+        data = await self.post(url=EndPoint.User.PROFILE_EDIT, data_payload=payload)
         return data

@@ -17,7 +17,7 @@ class LiveService(Base):
             'collab_type': 1
         }
 
-        data = await self.post(client=self.client, url=EndPoint.Collab.REQUEST, data_payload=payload)
+        data = await self.post(url=EndPoint.Collab.REQUEST, data_payload=payload)
         return data
     
     async def Collabo_Cancel(self, live_id: str | None = None):
@@ -27,14 +27,14 @@ class LiveService(Base):
             'live_id': str(target_live_id),
         }
         
-        data = await self.post(client=self.client, url=EndPoint.Collab.CANCEL, data_payload=payload)
+        data = await self.post(url=EndPoint.Collab.CANCEL, data_payload=payload)
         return data
     
     async def check_live(self, live_id: str | None = None):
         target_live_id = Ensure.live_id(self, live_id)
 
         params = {"live_id": str(target_live_id)}
-        data = await self.get(client=self.client, url=EndPoint.Live.LIVE, params=params)
+        data = await self.get(url=EndPoint.Live.LIVE, params=params)
 
         
         class Res(NamedTuple):
@@ -57,7 +57,7 @@ class LiveService(Base):
             'screen_settings': 0
         }
         
-        data = await self.post(client=self.client, url=EndPoint.Live.LIVE_POLLING, data_payload=payload)
+        data = await self.post(url=EndPoint.Live.LIVE_POLLING, data_payload=payload)
         return data
     
     async def live_leave(self, live_id: str | None = None):
@@ -67,5 +67,5 @@ class LiveService(Base):
             'live_id': str(target_live_id),
         }
         
-        data = await self.post(client=self.client, url=EndPoint.Live.LEAVE, data_payload=payload)
+        data = await self.post(url=EndPoint.Live.LEAVE, data_payload=payload)
         return data
