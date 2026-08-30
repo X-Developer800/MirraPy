@@ -1,7 +1,7 @@
 import httpx
 from .service.user import UserService
 from .service.live import LiveService
-from .service.util import UtilService
+from .service.collab import CollabService
 from .base import Base
 
 class Client:
@@ -10,7 +10,7 @@ class Client:
         self._base = Base(client)
         self.user = UserService(self._base)
         self.live = LiveService(self._base)
-        self.util = UtilService(self._base)
+        self.collab = CollabService(self._base)
         
     def login(self, mr_id) -> None:
         self._client.cookies.set("mr_id", mr_id, domain="www.mirrativ.com")

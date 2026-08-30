@@ -1,15 +1,16 @@
-import httpx
 from ..base import Base, MirrativError
 from ..json_manager import Json_Manager
 from typing import NamedTuple, Any, Optional, TYPE_CHECKING
 from MirraPy.utils.endpoints import EndPoint
 from ..utils.ensure import Ensure
+from ..utils.validator import Validator
+
 
 if TYPE_CHECKING:
     from ..base import Base
 
 class UserService:
-    def __init__(self, base: Optional['Base']):
+    def __init__(self, base: 'Base'):
         self.base = base
             
     async def create_account(self, name: str, description: str = "create by XXX", url: str = "https://x.com/xxxxvtnk", save_mode: bool = None):
@@ -49,7 +50,7 @@ class UserService:
             cookies.get('mr_id', ''),
         )
         
-    async def edit_profile(self, user_id: int | str, name: str, description: str = "create by XXX", url: str = "https://x.com/xxxxvtnk") -> dict[str, Any]:
+    async def update_profile(self, user_id: int | str, name: str, description: str = "create by XXX", url: str = "https://x.com/xxxxvtnk") -> dict[str, Any]:
         await Ensure.user_exists(self.base, user_id)
         if not url.startswith("https://"):
             raise MirrativError("有効なUrlを指定してください")
@@ -67,4 +68,40 @@ class UserService:
             'include_urge_users': '0'
         }
         data = await self.base.post(url=EndPoint.User.PROFILE_EDIT, data_payload=payload)
+        return data
+    
+    async def profile(self, user_id: int | str): 
+        await Ensure.user_exists(self.base, user_id)
+        params = {"user_id": str(user_id)}
+        data = await self.base.get(url=EndPoint.User.PROFILE, params=params)
+            
+        class Res(NamedTuple):
+            name: str
+            description: str
+            image: str
+            follower: int
+            follow: int
+            user_name: str
+                
+        return Res(
+            name=data["name"],
+            description=data["description"],
+            image=data["profile_image_url"],
+            follower=data["follower_num"],
+            follow=data["following_num"],
+            user_name=data["name"]
+        )
+        
+    async def live_request(self, user_id, count: str | int) -> dict[str, Any]:      
+        await Ensure.user_exists(self.base, user_id)       
+        count = Validator.Int(count, "有効な回数を設定してください")
+        safe_count = min(int(count), 9999)
+                                    
+        payload = {
+            'user_id': str(user_id),
+            'count': str(safe_count),
+            'where': "profile"
+        }
+        
+        data = await self.base.post(url=EndPoint.User.LIVE_REQUEST, data_payload=payload)
         return data
