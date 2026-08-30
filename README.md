@@ -2,7 +2,7 @@
 
 Python用のMirattivAPIラッパー
 
-## インストールはこちら
+インストールはこちら
 
 ```bash
 pip install mirrapy
