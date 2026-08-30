@@ -35,15 +35,16 @@ class LiveService(Base):
 
         params = {"live_id": str(target_live_id)}
         data = await self.get(client=self.client, url=EndPoint.Live.LIVE, params=params)
-        print(data)
+
         
         class Res(NamedTuple):
             alive: bool
             is_collabo: bool
+            raw: str
             
         is_live_value = bool(data.get("is_live", 0))
         is_collabo = bool(data.get("collab_enabled", 0))
-        return Res(alive=is_live_value, is_collabo=is_collabo)
+        return Res(alive=is_live_value, is_collabo=is_collabo, raw=data)
     
     async def live_join(self, live_id: str | None = None):
         target_live_id = Ensure.live_id(self, live_id)
