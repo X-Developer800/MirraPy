@@ -7,11 +7,7 @@ from ..utils.ensure import Ensure
 from ..utils.validator import Validator
 from ..utils.extract import Extract
 
-class UtilService(Base):
-    def __init__(self, client: httpx.AsyncClient):
-        super().__init__(client) 
-        self.client = client
-        
+class UtilService(Base):  
     async def get_profile(self, user_id: int | str): 
         await Ensure.user_exists(self, user_id)
         params = {"user_id": str(user_id)}
@@ -36,7 +32,7 @@ class UtilService(Base):
     
     async def live_request(self, user_id, count: str | int) -> dict[str, Any]:      
         await Ensure.user_exists(self, user_id)       
-        Validator.Int(count, "有効な回数を設定してください")
+        count = Validator.Int(count, "有効な回数を設定してください")
         safe_count = min(int(count), 9999)
                                     
         payload = {

@@ -16,29 +16,31 @@ class Base:
     ]
     
     def __init__(self, client: httpx.AsyncClient):
-        self.live_id: str = None
+        self.live_id: str | None = None
         self.client = client
+        self.device = random.choice(self.DEVICES)
+        self.X_Idfv = str(uuid.uuid4()).replace("-", "")[:16]
+        self.X_Ad = str(uuid.uuid4())
+        self.X_Adjust_Adid = str(uuid.uuid4())
 
     def set_liveid(self, live_id: str) -> str:
         self.live_id = str(live_id)
         return self.live_id
         
     def _create_header(self) -> dict[str, str]:
-        device = random.choice(self.DEVICES)
-        
         return {
             "Host": "www.mirrativ.com",
             "X-Referer": "my_page",
-            "User-Agent": f'MR_APP/11.64.1/Android/{device["model"]}/{device["os"]}',
+            "User-Agent": f'MR_APP/11.64.1/Android/{self.device["model"]}/{self.device["os"]}',
             "Accept-Language": "ja-JP",
             "Http_x_timezone": "Asia/Tokyo",
-            "X-Idfv": str(uuid.uuid4()).replace("-", "")[:16], 
-            "X-Ad": str(uuid.uuid4()),                     
+            "X-Idfv": self.X_Idfv, 
+            "X-Ad": self.X_Ad,                     
             "X-Hw": "qcom",
             "X-Network-Status": "2",
             "X-Os-Push": "1",
             "X-Client-Unixtime": str(time.time()),
-            "X-Adjust-Adid": str(uuid.uuid4()),         
+            "X-Adjust-Adid": self.X_Adjust_Adid,         
             "X-Unity-Framework": "6.11.0"
         }
     

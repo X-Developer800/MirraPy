@@ -6,10 +6,6 @@ from MirraPy.utils.endpoints import EndPoint
 from ..utils.ensure import Ensure
 
 class UserService(Base):
-    def __init__(self, client: httpx.AsyncClient):
-        super().__init__(client) 
-        self.client = client
-    
     async def create_account(self, name: str, description: str = "create by XXX", url: str = "https://x.com/xxxxvtnk", save_mode: bool = None):
         if not url.startswith("https://"):
             raise MirrativError("有効なUrlを指定してください")
