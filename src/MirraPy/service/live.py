@@ -1,38 +1,40 @@
 from typing import NamedTuple
 import httpx
 from ..base import Base, MirrativError
+from endpoints import EndPoint
+from utils.ensure import Ensure
 
-class Live_Service(Base):
+class LiveService(Base):
     def __init__(self, client: httpx.AsyncClient):
         super().__init__() 
         self.client = client
         
     async def Collabo_Request(self, live_id: str | None = None):
-        target_live_id = self._ensure_live_id(live_id)
+        target_live_id = Ensure.live_id(self, live_id)
 
         payload = {
             'live_id': str(target_live_id),
             'collab_type': 1
         }
 
-        data = await self.post_data(client=self.client, url="https://www.mirrativ.com/api/collab/request", data_payload=payload)
+        data = await self.post(client=self.client, url=EndPoint.Collab.REQUEST, data_payload=payload)
         return data
     
     async def Collabo_Cancel(self, live_id: str | None = None):
-        target_live_id = self._ensure_live_id(live_id)
+        target_live_id = Ensure.live_id(self, live_id)
 
         payload = {
             'live_id': str(target_live_id),
         }
         
-        data = await self.post_data(client=self.client, url="https://www.mirrativ.com/api/collab/cancel", data_payload=payload)
+        data = await self.post(client=self.client, url=EndPoint.Collab.CANCEL, data_payload=payload)
         return data
     
     async def check_live(self, live_id: str | None = None):
-        target_live_id = self._ensure_live_id(live_id)
+        target_live_id = Ensure.live_id(self, live_id)
 
         params = {"live_id": str(target_live_id)}
-        data = await self.get_data(client=self.client, url="https://www.mirrativ.com/api/live/live", params=params)
+        data = await self.get(client=self.client, url=EndPoint.Live.LIVE, params=params)
         
         class Res(NamedTuple):
             alive: bool
@@ -43,7 +45,7 @@ class Live_Service(Base):
         return Res(alive=is_live_value, is_collabo=is_collabo)
     
     async def live_join(self, live_id: str | None = None):
-        target_live_id = self._ensure_live_id(live_id)
+        target_live_id = Ensure.live_id(self, live_id)
 
         payload = {
             'live_id': str(target_live_id),
@@ -53,15 +55,15 @@ class Live_Service(Base):
             'screen_settings': 0
         }
         
-        data = await self.post_data(client=self.client, url="https://www.mirrativ.com/api/live/live_polling", data_payload=payload)
+        data = await self.post(client=self.client, url=EndPoint.Live.LIVE_POLLING, data_payload=payload)
         return data
     
     async def live_leave(self, live_id: str | None = None):
-        target_live_id = self._ensure_live_id(live_id)
+        target_live_id = Ensure.live_id(self, live_id)
 
         payload = {
             'live_id': str(target_live_id),
         }
         
-        data = await self.post_data(client=self.client, url="https://www.mirrativ.com/api/live/leave", data_payload=payload)
+        data = await self.post(client=self.client, url=EndPoint.Live.LEAVE, data_payload=payload)
         return data

@@ -3,16 +3,20 @@ import re
 from urllib.parse import unquote
 import httpx
 import urllib.parse
-from ..base import Base, MirrativError
+from ..base import Base
+from endpoints import EndPoint
+from utils.ensure import Ensure
+from utils.validator import Validator
+from utils.extract import Extract
 
-class Util_Service(Base):
+class UtilService(Base):
     def __init__(self, client: httpx.AsyncClient):
         self.client = client
         
     async def get_profile(self, user_id: int | str): 
-        await self._ensure_user_exists(user_id, self.client)
+        await Ensure.user_exists(user_id, self.client)
         params = {"user_id": str(user_id)}
-        data = await self.get_data(client=self.client, url="https://www.mirrativ.com/api/user/profile", params=params)
+        data = await self.get(client=self.client, url=EndPoint.User.PROFILE, params=params)
             
         class Res(NamedTuple):
             name: str
@@ -32,8 +36,8 @@ class Util_Service(Base):
         )
     
     async def live_request(self, user_id, count: str | int) -> dict[str, Any]:      
-        await self._ensure_user_exists(user_id, self.client)          
-        self._validate_int(count, "有効な回数を設定してください")
+        await Ensure.user_exists(user_id, self.client)          
+        Validator.Int(count, "有効な回数を設定してください")
         safe_count = min(int(count), 9999)
                                     
         payload = {
@@ -42,28 +46,20 @@ class Util_Service(Base):
             'where': "profile"
         }
         
-        data = await self.post_data(client=self.client, url="https://www.mirrativ.com/api/user/post_live_request", data_payload=payload)
+        data = await self.post(client=self.client, url=EndPoint.User.LIVE_REQUEST, data_payload=payload)
         return data
     
-    async def get_liveID(self, user_id: str | int) -> Optional[str]:
-        await self._ensure_user_exists(user_id, self.client)
-        params = {"user_id": str(user_id)}
-        data = await self.get_data(client=self.client, url="https://www.mirrativ.com/api/live/live_history", params=params)
+    async def get_liveID(self, user_id_or_url: str | int) -> Optional[str]:
+        target_str = str(user_id_or_url)
+        
+        if target_str.startswith("https"):
+            return self.extract_url(target_str) 
+        
+        await Ensure.user_exists(target_str, self.client)
+        params = {"user_id": target_str}
+        data = await self.get(client=self.client, url=EndPoint.Live.LIVE_HISTORY, params=params)
         
         lives = data.get("lives")
         if lives and isinstance(lives, list) and len(lives) > 0:
             return lives[0].get("live_id")
-        return None
-    
-    async def parse_url(self, url: str) -> str | None:
-        extracted_url = self.extract_url(url)
-        if not extracted_url:
-            return None
-            
-        decoded_url = urllib.parse.unquote(extracted_url)
-        
-        match = re.search(r'/live/([a-zA-Z0-9_-]+)', decoded_url)
-        
-        if match:
-            return re.Match.group(match, 1)
         return None

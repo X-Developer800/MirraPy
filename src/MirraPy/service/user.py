@@ -2,9 +2,10 @@ import httpx
 from ..base import Base, MirrativError
 from ..json_manager import Json_Manager
 from typing import NamedTuple, Any
-from urllib.parse import parse_qs, urlparse
+from endpoints import EndPoint
+from utils.ensure import Ensure
 
-class User_Service(Base):
+class UserService(Base):
     def __init__(self, client: httpx.AsyncClient):
         self.client = client
     
@@ -15,7 +16,7 @@ class User_Service(Base):
         headers = self._create_header()
         links_value = '[{"url":"' + url + '"}]'
 
-        r2 = await self.client.get("https://www.mirrativ.com/api/user/me", headers=headers)
+        r2 = await self.client.get(EndPoint.User.ME, headers=headers)
         r2.raise_for_status()
         user_id = r2.json().get('user_id')
 
@@ -29,7 +30,7 @@ class User_Service(Base):
             'is_vip_public': '1',
             'include_urge_users': '0'
         }
-        data = await self.post_data(client=self.client, url="https://www.mirrativ.com/api/user/profile_edit", data_payload=payload)
+        data = await self.post(client=self.client, url=EndPoint.User.PROFILE_EDIT, data_payload=payload)
         cookies = self.client.cookies
         if save_mode:
             Json_Manager.save(mr_id=cookies.get('mr_id', ''), user_id=str(user_id))
@@ -46,7 +47,7 @@ class User_Service(Base):
         )
         
     async def edit_profile(self, user_id: int | str, name: str, description: str = "create by XXX", url: str = "https://x.com/xxxxvtnk") -> dict[str, Any]:
-        await self._ensure_user_exists(user_id, self.client)
+        await Ensure.user_exists(user_id, self.client)
         if not url.startswith("https://"):
             raise MirrativError("有効なUrlを指定してください")
         
@@ -62,5 +63,5 @@ class User_Service(Base):
             'is_vip_public': '1',
             'include_urge_users': '0'
         }
-        data = await self.post_data(client=self.client, url="https://www.mirrativ.com/api/user/profile_edit", data_payload=payload)
+        data = await self.post(client=self.client, url=EndPoint.User.PROFILE_EDIT, data_payload=payload)
         return data
