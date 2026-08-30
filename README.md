@@ -81,14 +81,11 @@ asyncio.run(login_edit())
 asyncio.run(create_ac())
 ```
 
-### 補足
-Mirattivのログイン鍵があるのでログイン機能も追加予定。
-
-### アカウントについて
-現在の状況では端末が未確認とでる為アカウント連携が必須になる。
+> [!NOTE]
+> Mirattivのログイン鍵があるのでログイン機能も追加予定。
 
 ## コンタクト  
-Discord: a
-X: b
+Discord: a  
+X: b  
 
 
