@@ -85,7 +85,7 @@ asyncio.run(create_ac())
 > MirrativのTwitter認証キーを利用したログイン機能も今後追加予定
 
 ## コンタクト  
-Discord: a  
-X: b  
+[Discord](https://discord.gg/KfDmv3XFDD)  
+X: xxxxvtnk
 
 
