@@ -35,6 +35,7 @@ class LiveService(Base):
 
         params = {"live_id": str(target_live_id)}
         data = await self.get(client=self.client, url=EndPoint.Live.LIVE, params=params)
+        print(data)
         
         class Res(NamedTuple):
             alive: bool
