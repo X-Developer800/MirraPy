@@ -1,10 +1,10 @@
+from typing import Any, TYPE_CHECKING
+from MirraPy.utils.endpoints import EndPoint
 from ..base import Base, MirrativError
 from ..json_manager import Json_Manager
-from typing import NamedTuple, Any, Optional, TYPE_CHECKING
-from MirraPy.utils.endpoints import EndPoint
+from ..models.user import CreateAccount, UpdateProfile
 from ..utils.ensure import Ensure
 from ..utils.validator import Validator
-
 
 if TYPE_CHECKING:
     from ..base import Base
@@ -13,7 +13,7 @@ class UserService:
     def __init__(self, base: 'Base'):
         self.base = base
             
-    async def create_account(self, name: str, description: str = "create by XXX", url: str = "https://x.com/xxxxvtnk", save_mode: bool = None):
+    async def create_account(self, name: str, description: str = "create by XXX", url: str = "https://x.com/xxxxvtnk", save_mode: bool = None) -> CreateAccount:
         if not url.startswith("https://"):
             raise MirrativError("有効なUrlを指定してください")
             
@@ -39,18 +39,13 @@ class UserService:
         if save_mode:
             Json_Manager.save(mr_id=cookies.get('mr_id', ''), user_id=str(user_id))
 
-        class Res(NamedTuple):
-            username: str
-            userid: str
-            mr_id: str
-
-        return Res(
+        return CreateAccount(
             data.get("name"), 
             str(data.get("user_id")), 
             cookies.get('mr_id', ''),
         )
         
-    async def update_profile(self, user_id: int | str, name: str, description: str = "create by XXX", url: str = "https://x.com/xxxxvtnk") -> dict[str, Any]:
+    async def update_profile(self, user_id: int | str, name: str, description: str = "create by XXX", url: str = "https://x.com/xxxxvtnk") -> UpdateProfile:
         await Ensure.user_exists(self.base, user_id)
         if not url.startswith("https://"):
             raise MirrativError("有効なUrlを指定してください")
@@ -75,15 +70,7 @@ class UserService:
         params = {"user_id": str(user_id)}
         data = await self.base.get(url=EndPoint.User.PROFILE, params=params)
             
-        class Res(NamedTuple):
-            name: str
-            description: str
-            image: str
-            follower: int
-            follow: int
-            user_name: str
-                
-        return Res(
+        return UpdateProfile(
             name=data["name"],
             description=data["description"],
             image=data["profile_image_url"],
