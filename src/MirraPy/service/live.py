@@ -2,7 +2,7 @@ from typing import NamedTuple
 import httpx
 from ..base import Base, MirrativError
 from MirraPy.utils.endpoints import EndPoint
-from utils.ensure import Ensure
+from ..utils.ensure import Ensure
 
 class LiveService(Base):
     def __init__(self, client: httpx.AsyncClient):

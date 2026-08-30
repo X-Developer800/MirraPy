@@ -3,7 +3,7 @@ from ..base import Base, MirrativError
 from ..json_manager import Json_Manager
 from typing import NamedTuple, Any
 from MirraPy.utils.endpoints import EndPoint
-from utils.ensure import Ensure
+from ..utils.ensure import Ensure
 
 class UserService(Base):
     def __init__(self, client: httpx.AsyncClient):
