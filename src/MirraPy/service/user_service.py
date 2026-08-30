@@ -32,7 +32,7 @@ class User_Service(Base):
         data = await self.post_data(client=self.client, url="https://www.mirrativ.com/api/user/profile_edit", data_payload=payload)
         cookies = self.client.cookies
         if save_mode:
-            Json_Manager.save(mr_id=cookies.get('mr_id', ''))
+            Json_Manager.save(mr_id=cookies.get('mr_id', ''), user_id=str(user_id))
 
         class Res(NamedTuple):
             username: str

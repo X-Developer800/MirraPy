@@ -9,7 +9,7 @@ class Json_Manager:
         return os.path.join(base_dir, "accounts.json")
     
     @classmethod
-    def load(cls) -> list:
+    def load(cls) -> list[dict]:
         file_path = cls.Base_dir()
         
         if not os.path.exists(file_path):
@@ -27,12 +27,22 @@ class Json_Manager:
             return []
     
     @classmethod
-    def save(cls, mr_id: str):
+    def save(cls, mr_id: str, user_id: str | int):
         file_path = cls.Base_dir()
         accounts = cls.load()
         
-        if not any(acc.get("mr_id") == mr_id for acc in accounts):
-            accounts.append({"mr_id": mr_id})
+        exists = False
+        for acc in accounts:
+            if acc.get("mr_id") == mr_id:
+                acc["user_id"] = str(user_id)
+                exists = True
+                break
+        
+        if not exists:
+            accounts.append({
+                "mr_id": mr_id,
+                "user_id": str(user_id)
+            })
             
-            with open(file_path, "w", encoding="utf-8") as f:
-                json.dump(accounts, f, ensure_ascii=False, indent=4)
+        with open(file_path, "w", encoding="utf-8") as f:
+            json.dump(accounts, f, ensure_ascii=False, indent=4)
