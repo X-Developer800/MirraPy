@@ -1,4 +1,4 @@
-from .base import get_live_info
+from .base import MirrativError
+from .mirattiv import Client
 
-# ライブラリ自体のバージョンを定義しておくことも多いです
-__version__ = "0.1.2"
+__version__ = "0.1.3"
