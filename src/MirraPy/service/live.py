@@ -1,7 +1,7 @@
 from typing import NamedTuple
 import httpx
 from ..base import Base, MirrativError
-from endpoints import EndPoint
+from MirraPy.utils.endpoints import EndPoint
 from utils.ensure import Ensure
 
 class LiveService(Base):

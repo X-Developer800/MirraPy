@@ -2,7 +2,7 @@ import httpx
 from ..base import Base, MirrativError
 from ..json_manager import Json_Manager
 from typing import NamedTuple, Any
-from endpoints import EndPoint
+from MirraPy.utils.endpoints import EndPoint
 from utils.ensure import Ensure
 
 class UserService(Base):

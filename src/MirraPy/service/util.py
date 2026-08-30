@@ -4,7 +4,7 @@ from urllib.parse import unquote
 import httpx
 import urllib.parse
 from ..base import Base
-from endpoints import EndPoint
+from MirraPy.utils.endpoints import EndPoint
 from utils.ensure import Ensure
 from utils.validator import Validator
 from utils.extract import Extract

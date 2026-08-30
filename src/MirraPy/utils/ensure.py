@@ -1,7 +1,7 @@
 import httpx
 from typing import Any
 from ..base import Base, MirrativError
-from ..endpoints import EndPoint
+from .endpoints import EndPoint
 from validator import Validator
 
 class Ensure:
