@@ -19,3 +19,6 @@ venv/
 .idea/
 *.swp
 *.swo
+
+# ―― ここから追加 ――
+update.py
