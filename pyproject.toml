@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mirrapy"  # PyPI上の公開名（小文字・ハイフン推奨）
-version = "0.1.0"
+version = "0.1.1"
 description = "MirraPyライブラリの説明"
 readme = "README.md"
 requires-python = ">=3.8"
