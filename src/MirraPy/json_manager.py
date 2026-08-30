@@ -36,6 +36,3 @@ class Json_Manager:
             
             with open(file_path, "w", encoding="utf-8") as f:
                 json.dump(accounts, f, ensure_ascii=False, indent=4)
-            print(f"アカウントを保存しました: {mr_id}")
-        else:
-            print(f"すでに存在しています: {mr_id}")
