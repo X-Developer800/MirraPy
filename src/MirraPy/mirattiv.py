@@ -14,3 +14,6 @@ class Client:
         
     def login(self, mr_id) -> None:
         self._client.cookies.set("mr_id", mr_id, domain="www.mirrativ.com")
+        
+    def set_liveid(self, live_id: str) -> str:
+        return self._base.set_liveid(live_id)
