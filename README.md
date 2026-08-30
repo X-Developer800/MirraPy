@@ -8,3 +8,6 @@ PyPIから `pip` を使ってインストールできます。
 
 ```bash
 pip install mirrapy
+
+```bash
+pip install --upgrade mirrapy

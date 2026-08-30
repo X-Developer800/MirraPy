@@ -2,6 +2,7 @@ from typing import NamedTuple, Optional, Any
 import re
 from urllib.parse import unquote
 import httpx
+import urllib.parse
 from ..base import Base, MirrativError
 
 class Util_Service(Base):
@@ -54,11 +55,15 @@ class Util_Service(Base):
             return lives[0].get("live_id")
         return None
     
-    async def parse_url(self, url: str) -> Optional[str]:
-        decoded_url = self.extract_url(url)
+    async def parse_url(self, url: str) -> str | None:
+        extracted_url = self.extract_url(url)
+        if not extracted_url:
+            return None
+            
+        decoded_url = urllib.parse.unquote(extracted_url)
+        
         match = re.search(r'/live/([a-zA-Z0-9_-]+)', decoded_url)
         
         if match:
-            return match.group(1)
+            return re.Match.group(match, 1)
         return None
-    
