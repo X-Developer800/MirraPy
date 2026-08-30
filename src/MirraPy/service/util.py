@@ -49,9 +49,7 @@ class UtilService(Base):
     
     async def get_liveID(self, user_id_or_url: str | int) -> Optional[str]:
         target_str = str(user_id_or_url)
-        
-        if target_str.startswith("https"):
-            return self.extract_url(target_str) 
+        if target_str.startswith("https"): return Extract.url(target_str) 
         
         await Ensure.user_exists(target_str, self.client)
         params = {"user_id": target_str}
