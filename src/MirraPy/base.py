@@ -78,7 +78,7 @@ class Base:
         except (ValueError, TypeError):
             raise MirrativError(comment)
         
-    def extract_url(text) -> str | None:
+    def extract_url(self, text) -> str | None:
         url_index = str.find(text, "https://")
         if url_index != -1:
             extracted_url = str.strip(text[url_index:])
