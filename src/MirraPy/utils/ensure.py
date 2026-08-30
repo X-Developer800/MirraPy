@@ -1,8 +1,11 @@
 import httpx
-from typing import Any
+from typing import TYPE_CHECKING
 from ..base import Base, MirrativError
 from .endpoints import EndPoint
 from .validator import Validator
+
+if TYPE_CHECKING:
+    from ..base import Base
 
 class Ensure:
     @staticmethod
@@ -13,7 +16,7 @@ class Ensure:
         return str(target_id)
     
     @staticmethod
-    async def user_exists(base, user_id: int | str) -> None:
+    async def user_exists(base: Base, user_id: int | str) -> None:
         Validator.Int(user_id, "有効なユーザーIDを設定してください")
         params = {"q": str(user_id)}
         data = await base.get(url=EndPoint.User.SEARCH, params=params)

@@ -1,19 +1,25 @@
 import httpx
 from ..base import Base, MirrativError
 from ..json_manager import Json_Manager
-from typing import NamedTuple, Any
+from typing import NamedTuple, Any, Optional, TYPE_CHECKING
 from MirraPy.utils.endpoints import EndPoint
 from ..utils.ensure import Ensure
 
-class UserService(Base):
+if TYPE_CHECKING:
+    from ..base import Base
+
+class UserService:
+    def __init__(self, base: Optional['Base']):
+        self.base = base
+            
     async def create_account(self, name: str, description: str = "create by XXX", url: str = "https://x.com/xxxxvtnk", save_mode: bool = None):
         if not url.startswith("https://"):
             raise MirrativError("有効なUrlを指定してください")
             
-        headers = self._create_header()
+        headers = self.base._create_header()
         links_value = '[{"url":"' + url + '"}]'
 
-        r2 = await self.client.get(EndPoint.User.ME, headers=headers)
+        r2 = await self.base.client.get(EndPoint.User.ME, headers=headers)
         r2.raise_for_status()
         user_id = r2.json().get('user_id')
 
@@ -27,8 +33,8 @@ class UserService(Base):
             'is_vip_public': '1',
             'include_urge_users': '0'
         }
-        data = await self.post(url=EndPoint.User.PROFILE_EDIT, data_payload=payload)
-        cookies = self.client.cookies
+        data = await self.base.post(url=EndPoint.User.PROFILE_EDIT, data_payload=payload)
+        cookies = self.base.client.cookies
         if save_mode:
             Json_Manager.save(mr_id=cookies.get('mr_id', ''), user_id=str(user_id))
 
@@ -44,7 +50,7 @@ class UserService(Base):
         )
         
     async def edit_profile(self, user_id: int | str, name: str, description: str = "create by XXX", url: str = "https://x.com/xxxxvtnk") -> dict[str, Any]:
-        await Ensure.user_exists(self, user_id)
+        await Ensure.user_exists(self.base, user_id)
         if not url.startswith("https://"):
             raise MirrativError("有効なUrlを指定してください")
         
@@ -60,5 +66,5 @@ class UserService(Base):
             'is_vip_public': '1',
             'include_urge_users': '0'
         }
-        data = await self.post(url=EndPoint.User.PROFILE_EDIT, data_payload=payload)
+        data = await self.base.post(url=EndPoint.User.PROFILE_EDIT, data_payload=payload)
         return data

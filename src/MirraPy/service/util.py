@@ -1,4 +1,4 @@
-from typing import NamedTuple, Optional, Any
+from typing import NamedTuple, Optional, Any, TYPE_CHECKING
 from urllib.parse import unquote
 import httpx
 from ..base import Base
@@ -7,11 +7,17 @@ from ..utils.ensure import Ensure
 from ..utils.validator import Validator
 from ..utils.extract import Extract
 
-class UtilService(Base):  
+if TYPE_CHECKING:
+    from ..base import Base
+
+class UtilService:  
+    def __init__(self, base: Optional['Base']):
+        self.base = base
+        
     async def get_profile(self, user_id: int | str): 
-        await Ensure.user_exists(self, user_id)
+        await Ensure.user_exists(self.base, user_id)
         params = {"user_id": str(user_id)}
-        data = await self.get(url=EndPoint.User.PROFILE, params=params)
+        data = await self.base.get(url=EndPoint.User.PROFILE, params=params)
             
         class Res(NamedTuple):
             name: str
@@ -31,7 +37,7 @@ class UtilService(Base):
         )
     
     async def live_request(self, user_id, count: str | int) -> dict[str, Any]:      
-        await Ensure.user_exists(self, user_id)       
+        await Ensure.user_exists(self.base, user_id)       
         count = Validator.Int(count, "有効な回数を設定してください")
         safe_count = min(int(count), 9999)
                                     
@@ -41,16 +47,16 @@ class UtilService(Base):
             'where': "profile"
         }
         
-        data = await self.post(url=EndPoint.User.LIVE_REQUEST, data_payload=payload)
+        data = await self.base.post(url=EndPoint.User.LIVE_REQUEST, data_payload=payload)
         return data
     
     async def get_liveID(self, user_id_or_url: str | int) -> Optional[str]:
         target_str = str(user_id_or_url)
         if target_str.startswith("https"): return Extract.url(target_str) 
         
-        await Ensure.user_exists(self, user_id_or_url)
+        await Ensure.user_exists(self.base, user_id_or_url)
         params = {"user_id": target_str}
-        data = await self.get(url=EndPoint.Live.LIVE_HISTORY, params=params)
+        data = await self.base.get(url=EndPoint.Live.LIVE_HISTORY, params=params)
         
         lives = data.get("lives")
         if lives and isinstance(lives, list) and len(lives) > 0:
