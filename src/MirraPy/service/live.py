@@ -45,7 +45,7 @@ class LiveService:
         data = await self.base.post(url=EndPoint.Live.LEAVE, data_payload=payload)
         return data
     
-    async def find_id(self, user_id_or_url: str | int) -> Optional[str]:
+    async def find_id(self, user_id_or_url: str | int) -> str | None:
         target_str = str(user_id_or_url)
         if target_str.startswith("https"): return Extract.url(target_str) 
         
