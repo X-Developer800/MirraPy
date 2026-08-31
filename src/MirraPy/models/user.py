@@ -5,10 +5,11 @@ class CreateAccount(NamedTuple):
     userid: str
     mr_id: str
     
-class UpdateProfile(NamedTuple):
+class GetProfile(NamedTuple):
     name: str
     description: str
     image: str
     follower: int
     follow: int
     user_name: str
+    share_url: str

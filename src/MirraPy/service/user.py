@@ -2,7 +2,7 @@ from typing import Any, TYPE_CHECKING
 from MirraPy.utils.endpoints import EndPoint
 from ..base import Base, MirrativError
 from ..json_manager import Json_Manager
-from ..models.user import CreateAccount, UpdateProfile
+from ..models.user import CreateAccount, GetProfile
 from ..utils.ensure import Ensure
 from ..utils.validator import Validator
 
@@ -45,7 +45,7 @@ class UserService:
             cookies.get('mr_id', ''),
         )
         
-    async def update_profile(self, user_id: int | str, name: str, description: str = "create by XXX", url: str = "https://x.com/xxxxvtnk") -> UpdateProfile:
+    async def update_profile(self, user_id: int | str, name: str, description: str = "create by XXX", url: str = "https://x.com/xxxxvtnk") -> dict[str, Any]:
         await Ensure.user_exists(self.base, user_id)
         if not url.startswith("https://"):
             raise MirrativError("有効なUrlを指定してください")
@@ -70,13 +70,14 @@ class UserService:
         params = {"user_id": str(user_id)}
         data = await self.base.get(url=EndPoint.User.PROFILE, params=params)
             
-        return UpdateProfile(
+        return GetProfile(
             name=data["name"],
             description=data["description"],
             image=data["profile_image_url"],
             follower=data["follower_num"],
             follow=data["following_num"],
-            user_name=data["name"]
+            user_name=data["name"],
+            share_url=data["share_url"]
         )
         
     async def live_request(self, user_id, count: str | int) -> dict[str, Any]:      
